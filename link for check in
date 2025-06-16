@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор ссылок для заселения</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Генератор ссылок для заселения</h1>
+        <div class="space-y-4">
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700">Адрес квартиры</label>
+                <select id="address" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">Выберите адрес</option>
+                    <option value="biberev251-4_1">ул. Бибиревская 4А, кв. 251</option>
+                    <option value="lenina1-5_2">ул. Ленина 1, кв. 52</option>
+                    <option value="mira10-3_3">ул. Мира 10, кв. 33</option>
+                    <option value="solnechnaya5-7_4">ул. Солнечная 5, кв. 74</option>
+                    <option value="tsentralnaya8-2_5">ул. Центральная 8, кв. 25</option>
+                    <option value="parkovaya12-6_6">ул. Парковая 12, кв. 66</option>
+                    <option value="zvezdnaya3-9_7">ул. Звездная 3, кв. 97</option>
+                    <option value="svobody15-4_8">ул. Свободы 15, кв. 48</option>
+                    <option value="prospekt20-1_9">пр. Проспект 20, кв. 19</option>
+                    <option value="oktyabrskaya7-5_10">ул. Октябрьская 7, кв. 510</option>
+                    <option value="vesennaya9-3_11">ул. Весенняя 9, кв. 311</option>
+                    <option value="yuzhnaya4-8_12">ул. Южная 4, кв. 812</option>
+                    <option value="severnaya6-2_13">ул. Северная 6, кв. 213</option>
+                    <option value="vostochnaya11-7_14">ул. Восточная 11, кв. 714</option>
+                    <option value="zapadnaya13-5_15">ул. Западная 13, кв. 515</option>
+                    <option value="lunnaya2-4_16">ул. Лунная 2, кв. 416</option>
+                    <option value="solntseva8-6_17">ул. Солнцева 8, кв. 617</option>
+                    <option value="komsomolskaya14-9_18">ул. Комсомольская 14, кв. 918</option>
+                    <option value="pobedy16-3_19">ул. Победы 16, кв. 319</option>
+                    <option value="druzhby18-1_20">ул. Дружбы 18, кв. 120</option>
+                    <option value="molodezhnaya19-5_21">ул. Молодежная 19, кв. 521</option>
+                    <option value="zelenaya21-7_22">ул. Зеленая 21, кв. 722</option>
+                    <option value="krasnaya23-2_23">ул. Красная 23, кв. 223</option>
+                    <option value="belaya25-8_24">ул. Белая 25, кв. 824</option>
+                    <option value="sineva27-4_25">ул. Синева 27, кв. 425</option>
+                </select>
+            </div>
+            <div>
+                <label for="datein" class="block text-sm font-medium text-gray-700">Дата заезда</label>
+                <input id="datein" type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Выберите дату">
+            </div>
+            <div>
+                <label for="dateout" class="block text-sm font-medium text-gray-700">Дата выезда</label>
+                <input id="dateout" type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Выберите дату">
+            </div>
+            <div>
+                <label for="code" class="block text-sm font-medium text-gray-700">Код от домофона</label>
+                <input id="code" type="text" maxlength="4" pattern="\d{4}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Введите 4 цифры">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Сгенерированная ссылка</label>
+                <input id="generatedLink" type="text" readonly class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100" placeholder="Ссылка появится здесь">
+            </div>
+            <button id="copyButton" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" disabled>Скопировать</button>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация календарей
+        flatpickr("#datein", {
+            dateFormat: "d.m.Y",
+            minDate: "today",
+            locale: "ru",
+            onChange: generateLink
+        });
+        flatpickr("#dateout", {
+            dateFormat: "d.m.Y",
+            minDate: "today",
+            locale: "ru",
+            onChange: generateLink
+        });
+
+        // Список элементов формы
+        const addressSelect = document.getElementById('address');
+        const dateInInput = document.getElementById('datein');
+        const dateOutInput = document.getElementById('dateout');
+        const codeInput = document.getElementById('code');
+        const generatedLinkInput = document.getElementById('generatedLink');
+        const copyButton = document.getElementById('copyButton');
+
+        // Добавление слушателей событий
+        addressSelect.addEventListener('change', generateLink);
+        codeInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 4);
+            generateLink();
+        });
+        copyButton.addEventListener('click', copyLink);
+
+        // Функция генерации ссылки
+        function generateLink() {
+            const address = addressSelect.value;
+            const dateIn = dateInInput.value;
+            const dateOut = dateOutInput.value;
+            const code = codeInput.value;
+
+            if (address && dateIn && dateOut && code.length === 4) {
+                const link = `https://sbsite.pro/${address}?datein=${dateIn}&dateout=${dateOut}&code=${code}`;
+                generatedLinkInput.value = link;
+                copyButton.disabled = false;
+            } else {
+                generatedLinkInput.value = '';
+                copyButton.disabled = true;
+            }
+        }
+
+        // Функция копирования ссылки
+        function copyLink() {
+            generatedLinkInput.select();
+            navigator.clipboard.writeText(generatedLinkInput.value).then(() => {
+                alert('Ссылка скопирована!');
+            }).catch(err => {
+                console.error('Ошибка копирования:', err);
+            });
+        }
+    </script>
+</body>
+</html>
